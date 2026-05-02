@@ -251,8 +251,8 @@
     <div class="category">
       <div class="cat-header"><div class="cat-label">Active</div><div class="cat-line"></div></div>
       <div class="app-grid">
-        <div class="app-tile" onclick="openApp('Sports Betting','#')">
-          <span class="tile-pip pip-wip"></span>
+        <div class="app-tile" onclick="openApp('SharpLines','https://jardsen.github.io/Sharplines/')">
+          <span class="tile-pip pip-live"></span>
           <div class="tile-icon-wrap">
             <div class="tile-glow"></div>
             <div class="tile-icon">
@@ -263,7 +263,7 @@
               </svg>
             </div>
           </div>
-          <div class="tile-name">Sports Betting</div>
+          <div class="tile-name">SharpLines</div>
         </div>
       </div>
     </div>
@@ -603,15 +603,15 @@
 
     const lines = [
       { text: 'CHASER OS — BOOT SEQUENCE INITIATED', cls: 'accent', delay: 0 },
-      { text: 'Loading kernel modules...', delay: 300 },
-      { text: 'Mounting filesystem...', delay: 600 },
-      { text: 'Checking system integrity... OK', delay: 900 },
-      { text: 'Establishing secure connection...', delay: 1200 },
-      { text: 'Loading user profile: JARDSEN', cls: 'accent', delay: 1500 },
-      { text: 'Decrypting personal vault...', delay: 1800 },
-      { text: 'Initializing app registry... 7 apps found', delay: 2100 },
-      { text: 'Starting display server...', delay: 2400 },
-      { text: 'All systems nominal.', cls: 'accent', delay: 2700 },
+      { text: 'Loading kernel modules...', delay: 150 },
+      { text: 'Mounting filesystem...', delay: 300 },
+      { text: 'Checking system integrity... OK', delay: 450 },
+      { text: 'Establishing secure connection...', delay: 600 },
+      { text: 'Loading user profile: JARDSEN', cls: 'accent', delay: 750 },
+      { text: 'Decrypting personal vault...', delay: 900 },
+      { text: 'Initializing app registry... 7 apps found', delay: 1050 },
+      { text: 'Starting display server...', delay: 1200 },
+      { text: 'All systems nominal.', cls: 'accent', delay: 1350 },
     ];
 
     lines.forEach(l => {
@@ -628,11 +628,11 @@
       barWrap.style.display = 'block';
       let pct = 0;
       const iv = setInterval(() => {
-        pct += 2;
+        pct += 5;
         barFill.style.width = pct + '%';
-        if(pct >= 100){ clearInterval(iv); setTimeout(showGate, 300); }
-      }, 28);
-    }, 3000);
+        if(pct >= 100){ clearInterval(iv); setTimeout(showGate, 200); }
+      }, 18);
+    }, 1500);
   })();
 </script>
 </body>
