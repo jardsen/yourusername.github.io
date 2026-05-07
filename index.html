@@ -8,7 +8,6 @@
   <style>
     *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
     html,body{height:100%;overflow:hidden}
-
     body{
       --accent:#c8f135;--accent-dim:rgba(200,241,53,0.12);--accent-glow:rgba(200,241,53,0.25);
       --bg:#060608;--surface:#0d0d10;--border:rgba(200,241,53,0.15);
@@ -19,25 +18,17 @@
     body.theme-gold{--accent:#f5c518;--accent-dim:rgba(245,197,24,0.1);--accent-glow:rgba(245,197,24,0.22);--border:rgba(245,197,24,0.18);--scan:rgba(245,197,24,0.03);}
     body.theme-purple{--accent:#b060ff;--accent-dim:rgba(176,96,255,0.1);--accent-glow:rgba(176,96,255,0.22);--border:rgba(176,96,255,0.15);--scan:rgba(176,96,255,0.03);}
     body.theme-white{--accent:#ffffff;--accent-dim:rgba(255,255,255,0.08);--accent-glow:rgba(255,255,255,0.15);--border:rgba(255,255,255,0.12);--scan:rgba(255,255,255,0.025);}
-
     body{background:var(--bg);color:var(--text);font-family:'Rajdhani',sans-serif;}
-
     #noise-canvas{position:fixed;inset:0;width:100%;height:100%;pointer-events:none;z-index:0;opacity:0.18;mix-blend-mode:screen;}
-    #gate,#os{position:relative;z-index:1;}
-
+    #gate,#os,#admin-overlay{position:relative;z-index:1;}
     body::after{content:'';position:fixed;inset:0;background:repeating-linear-gradient(0deg,var(--scan) 0px,var(--scan) 1px,transparent 1px,transparent 3px);pointer-events:none;z-index:9997;}
     body::before{content:'';position:fixed;inset:0;background-image:url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");pointer-events:none;z-index:9996;opacity:0.5;}
 
-    /* ── BOOT SEQUENCE ── */
-    #boot{
-      position:fixed;inset:0;background:var(--bg);z-index:10000;
-      display:flex;flex-direction:column;justify-content:center;
-      padding:60px;font-family:'Share Tech Mono',monospace;
-    }
+    /* ── BOOT ── */
+    #boot{position:fixed;inset:0;background:var(--bg);z-index:10000;display:flex;flex-direction:column;justify-content:center;padding:60px;font-family:'Share Tech Mono',monospace;}
     #boot-lines{font-size:12px;letter-spacing:0.08em;line-height:2;color:var(--muted);}
     #boot-lines .bl{opacity:0;animation:bootLine 0.1s ease forwards;}
     #boot-lines .bl.accent{color:var(--accent);}
-    #boot-lines .bl.err{color:#f13535;}
     #boot-cursor{display:inline-block;width:8px;height:14px;background:var(--accent);animation:blink 0.7s step-end infinite;vertical-align:middle;margin-left:4px;}
     #boot-bar-wrap{margin-top:24px;width:320px;}
     #boot-bar-label{font-size:10px;letter-spacing:0.2em;color:var(--muted);margin-bottom:8px;}
@@ -45,25 +36,21 @@
     #boot-bar-fill{height:2px;background:var(--accent);box-shadow:0 0 8px var(--accent);width:0%;transition:width 0.05s linear;}
 
     /* ── GATE ── */
-    #gate{
-      position:fixed;inset:0;background:var(--bg);z-index:9999;
-      display:none;flex-direction:column;align-items:center;justify-content:center;gap:0;
-    }
+    #gate{position:fixed;inset:0;background:var(--bg);z-index:9999;display:none;flex-direction:column;align-items:center;justify-content:center;gap:0;}
     .gate-logo{font-family:'Bebas Neue',sans-serif;font-size:72px;letter-spacing:0.12em;color:var(--text);line-height:1;animation:flicker 4s ease infinite;}
     .gate-logo span{color:var(--accent);}
     .gate-sub{font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:0.3em;color:var(--muted);margin-bottom:48px;margin-top:4px;}
-    .gate-line{width:280px;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin-bottom:32px;animation:lineIn 1s ease 0.3s both;}
+    .gate-line{width:280px;height:1px;background:linear-gradient(90deg,transparent,var(--accent),transparent);margin-bottom:32px;}
     #gate-input{background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:16px;padding:10px 0;width:260px;letter-spacing:0.2em;text-align:center;outline:none;transition:border-color 0.3s;margin-bottom:8px;}
     #gate-input:focus{border-color:var(--accent);}
     #gate-input.error{border-color:#f13535;animation:shake 0.3s ease;}
     #gate-input::placeholder{color:var(--muted);letter-spacing:0.15em;}
     #gate-error{font-family:'Share Tech Mono',monospace;font-size:10px;color:#f13535;letter-spacing:0.2em;height:16px;margin-bottom:24px;}
-    #gate-btn{background:transparent;border:1px solid var(--accent);color:var(--accent);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:0.3em;text-transform:uppercase;padding:12px 48px;cursor:pointer;transition:background 0.2s,color 0.2s;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);}
+    #gate-btn{background:transparent;border:1px solid var(--accent);color:var(--accent);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:0.3em;padding:12px 48px;cursor:pointer;transition:background 0.2s,color 0.2s;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);}
     #gate-btn:hover{background:var(--accent);color:#000;}
 
     /* ── OS ── */
     #os{display:none;flex-direction:column;height:100vh;}
-
     #topbar{height:44px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;position:relative;}
     .topbar-brand{font-family:'Bebas Neue',sans-serif;font-size:18px;letter-spacing:0.1em;}
     .topbar-brand span{color:var(--accent);}
@@ -71,6 +58,8 @@
     #clock{font-family:'Share Tech Mono',monospace;font-size:12px;color:var(--muted);letter-spacing:0.1em;}
     #theme-btn{background:transparent;border:1px solid var(--border);color:var(--accent);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.15em;padding:4px 12px;cursor:pointer;transition:border-color 0.2s,background 0.2s;}
     #theme-btn:hover{border-color:var(--accent);background:var(--accent-dim);}
+    #admin-btn{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.15em;padding:4px 12px;cursor:pointer;transition:border-color 0.2s,color 0.2s;}
+    #admin-btn:hover{border-color:var(--accent);color:var(--accent);}
     #theme-panel{display:none;position:absolute;top:44px;right:20px;background:var(--surface);border:1px solid var(--border);padding:12px;z-index:100;gap:8px;flex-direction:column;min-width:160px;}
     #theme-panel.open{display:flex;}
     .theme-opt{display:flex;align-items:center;gap:10px;cursor:pointer;padding:6px 8px;transition:background 0.15s;font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:0.1em;color:var(--text);}
@@ -91,11 +80,13 @@
 
     /* HOME */
     #home{flex:1;overflow-y:auto;padding:28px 32px 40px;scrollbar-width:thin;scrollbar-color:var(--border) transparent;}
-
     .home-header{margin-bottom:28px;padding-bottom:20px;border-bottom:1px solid var(--border);display:flex;align-items:flex-end;justify-content:space-between;flex-wrap:wrap;gap:12px;}
-    .home-eyebrow{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.35em;color:var(--accent);text-transform:uppercase;margin-bottom:4px;animation:fadeDown 0.5s ease both;}
-    .home-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,6vw,80px);line-height:0.88;letter-spacing:0.04em;animation:fadeDown 0.5s ease 0.05s both;}
+    .home-eyebrow{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.35em;color:var(--accent);text-transform:uppercase;margin-bottom:4px;}
+    .home-title{font-family:'Bebas Neue',sans-serif;font-size:clamp(48px,6vw,80px);line-height:0.88;letter-spacing:0.04em;}
     .home-title span{color:var(--accent);}
+    .home-stats{text-align:right;}
+    .stat-num{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:0.05em;color:var(--accent);line-height:1;}
+    .stat-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.2em;color:var(--muted);text-transform:uppercase;}
 
     /* MOTTO */
     #motto-wrap{margin-bottom:24px;padding:14px 16px;border:1px solid var(--border);background:var(--surface);position:relative;}
@@ -108,14 +99,12 @@
     #motto-progress{position:absolute;bottom:0;left:0;height:1px;background:var(--accent);opacity:0.5;width:0%;transition:width linear;}
     .motto-icon{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.1em;display:block;margin-bottom:8px;}
 
-    .home-stats{text-align:right;}
-    .stat-num{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:0.05em;color:var(--accent);line-height:1;}
-    .stat-label{font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.2em;color:var(--muted);text-transform:uppercase;}
-
     /* NOTES */
     #notes-wrap{margin-bottom:28px;}
-    #notes-header{display:flex;align-items:center;gap:12px;margin-bottom:10px;}
     .notes-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--muted);}
+    #notes-header{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px;}
+    #notes-clear{background:transparent;border:none;color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.1em;cursor:pointer;transition:color 0.2s;}
+    #notes-clear:hover{color:#f13535;}
     #notes-area{width:100%;height:72px;background:var(--surface);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:0.05em;padding:10px 14px;resize:none;outline:none;line-height:1.6;scrollbar-width:thin;transition:border-color 0.2s;}
     #notes-area:focus{border-color:var(--accent);}
     #notes-area::placeholder{color:var(--muted);}
@@ -124,50 +113,105 @@
     .cat-header{display:flex;align-items:center;gap:12px;margin-bottom:14px;}
     .cat-label{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--muted);white-space:nowrap;}
     .cat-line{flex:1;height:1px;background:var(--border);}
-
     .app-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(96px,1fr));gap:8px;}
 
-    .app-tile{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;padding:16px 8px 12px;border:1px solid transparent;transition:border-color 0.2s,background 0.2s;animation:fadeUp 0.4s ease both;user-select:none;position:relative;background:transparent;}
+    /* TILE */
+    .app-tile{display:flex;flex-direction:column;align-items:center;gap:8px;cursor:pointer;padding:16px 8px 12px;border:1px solid transparent;transition:border-color 0.2s,background 0.2s;user-select:none;position:relative;background:transparent;}
     .app-tile::before{content:'';position:absolute;inset:0;background:var(--accent-dim);opacity:0;transition:opacity 0.2s;}
     .app-tile:hover{border-color:var(--border);}
     .app-tile:hover::before{opacity:1;}
     .app-tile:hover .tile-icon{transform:scale(1.06) translateY(-2px);}
     .app-tile:hover .tile-glow{opacity:1;}
-
     .tile-icon-wrap{position:relative;}
     .tile-glow{position:absolute;inset:-4px;background:radial-gradient(circle,var(--accent-glow) 0%,transparent 70%);opacity:0;transition:opacity 0.3s;pointer-events:none;}
-    .tile-icon{width:64px;height:64px;display:flex;align-items:center;justify-content:center;transition:transform 0.2s ease;position:relative;border:1px solid var(--border);background:var(--surface);z-index:1;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));}
+    .tile-icon{width:64px;height:64px;display:flex;align-items:center;justify-content:center;font-size:28px;transition:transform 0.2s ease;position:relative;border:1px solid var(--border);background:var(--surface);z-index:1;clip-path:polygon(0 0,calc(100% - 8px) 0,100% 8px,100% 100%,8px 100%,0 calc(100% - 8px));}
     .tile-name{font-family:'Rajdhani',sans-serif;font-size:11px;color:var(--text);text-align:center;line-height:1.25;font-weight:400;letter-spacing:0.05em;position:relative;z-index:1;}
     .tile-pip{width:5px;height:5px;border-radius:50%;position:absolute;top:10px;right:10px;}
     .pip-live{background:var(--accent);box-shadow:0 0 6px var(--accent);}
     .pip-wip{background:#f1b335;box-shadow:0 0 6px #f1b335;}
     .pip-planned{background:#2a2a2a;border:1px solid #333;}
 
-    /* SVG ICONS */
-    .tile-icon svg{width:32px;height:32px;}
-
     #iframe-view{display:none;flex:1;width:100%;border:none;}
-
     #os-footer{height:32px;border-top:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 20px;flex-shrink:0;background:var(--surface);}
     .footer-text{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.15em;}
     .footer-pulse{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--accent);margin-right:8px;box-shadow:0 0 6px var(--accent);animation:pulse 2s ease infinite;}
+
+    /* ── ADMIN OVERLAY ── */
+    #admin-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,0.92);z-index:9998;flex-direction:column;}
+    #admin-overlay.open{display:flex;}
+    #admin-gate{display:flex;flex-direction:column;align-items:center;justify-content:center;flex:1;gap:14px;}
+    #admin-gate h2{font-family:'Bebas Neue',sans-serif;font-size:40px;letter-spacing:0.1em;color:var(--text);}
+    #admin-gate h2 span{color:var(--accent);}
+    #admin-pass-input{background:transparent;border:none;border-bottom:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:14px;padding:10px 0;width:240px;letter-spacing:0.2em;text-align:center;outline:none;transition:border-color 0.3s;}
+    #admin-pass-input:focus{border-color:var(--accent);}
+    #admin-pass-input.error{border-color:#f13535;animation:shake 0.3s ease;}
+    #admin-pass-error{font-family:'Share Tech Mono',monospace;font-size:10px;color:#f13535;letter-spacing:0.2em;height:16px;}
+    #admin-pass-btn{background:transparent;border:1px solid var(--accent);color:var(--accent);font-family:'Share Tech Mono',monospace;font-size:11px;letter-spacing:0.3em;padding:10px 36px;cursor:pointer;transition:background 0.2s,color 0.2s;clip-path:polygon(8px 0%,100% 0%,calc(100% - 8px) 100%,0% 100%);}
+    #admin-pass-btn:hover{background:var(--accent);color:#000;}
+
+    #admin-panel{display:none;flex-direction:column;height:100%;}
+    #admin-panel.open{display:flex;}
+    #admin-topbar{height:48px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between;padding:0 24px;flex-shrink:0;}
+    #admin-topbar-title{font-family:'Bebas Neue',sans-serif;font-size:20px;letter-spacing:0.1em;}
+    #admin-topbar-title span{color:var(--accent);}
+    #admin-close{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.15em;padding:5px 16px;cursor:pointer;transition:border-color 0.2s,color 0.2s;}
+    #admin-close:hover{border-color:#f13535;color:#f13535;}
+    #admin-body{flex:1;overflow-y:auto;padding:28px 32px;display:grid;grid-template-columns:1fr 1fr;gap:24px;}
+
+    .admin-section{background:var(--surface);border:1px solid var(--border);padding:20px;}
+    .admin-section-title{font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.3em;text-transform:uppercase;color:var(--accent);margin-bottom:16px;padding-bottom:10px;border-bottom:1px solid var(--border);}
+
+    /* App list in admin */
+    .admin-app-list{display:flex;flex-direction:column;gap:8px;margin-bottom:16px;max-height:280px;overflow-y:auto;}
+    .admin-app-row{display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--border);background:var(--bg);}
+    .admin-app-row-icon{font-size:18px;width:28px;text-align:center;}
+    .admin-app-row-name{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text);flex:1;letter-spacing:0.05em;}
+    .admin-app-row-cat{font-family:'Share Tech Mono',monospace;font-size:9px;color:var(--muted);letter-spacing:0.08em;}
+    .admin-app-row-pip{width:7px;height:7px;border-radius:50%;}
+    .admin-app-edit{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:9px;padding:3px 8px;cursor:pointer;transition:border-color 0.2s,color 0.2s;letter-spacing:0.05em;}
+    .admin-app-edit:hover{border-color:var(--accent);color:var(--accent);}
+    .admin-app-del{background:transparent;border:1px solid var(--border);color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:9px;padding:3px 8px;cursor:pointer;transition:border-color 0.2s,color 0.2s;letter-spacing:0.05em;}
+    .admin-app-del:hover{border-color:#f13535;color:#f13535;}
+
+    /* Form fields */
+    .admin-field{margin-bottom:12px;}
+    .admin-field label{display:block;font-family:'Share Tech Mono',monospace;font-size:9px;letter-spacing:0.2em;color:var(--muted);text-transform:uppercase;margin-bottom:5px;}
+    .admin-field input,.admin-field select{width:100%;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:11px;padding:8px 10px;outline:none;transition:border-color 0.2s;letter-spacing:0.05em;}
+    .admin-field input:focus,.admin-field select:focus{border-color:var(--accent);}
+    .admin-field select option{background:#0d0d10;}
+
+    .admin-btn{background:var(--accent);color:#000;border:none;font-family:'Share Tech Mono',monospace;font-size:10px;font-weight:600;letter-spacing:0.2em;padding:10px 20px;cursor:pointer;transition:opacity 0.2s;width:100%;text-transform:uppercase;}
+    .admin-btn:hover{opacity:0.85;}
+    .admin-btn-sec{background:transparent;border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.2em;padding:8px 20px;cursor:pointer;transition:border-color 0.2s;width:100%;text-transform:uppercase;margin-top:8px;}
+    .admin-btn-sec:hover{border-color:var(--accent);}
+
+    /* Category manager */
+    .admin-cat-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+    .admin-cat-row{display:flex;align-items:center;gap:8px;padding:6px 10px;border:1px solid var(--border);background:var(--bg);}
+    .admin-cat-name{font-family:'Share Tech Mono',monospace;font-size:11px;color:var(--text);flex:1;}
+    .admin-cat-del{background:transparent;border:none;color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:11px;cursor:pointer;padding:0 4px;transition:color 0.2s;}
+    .admin-cat-del:hover{color:#f13535;}
+
+    /* Quick links admin */
+    .admin-ql-list{display:flex;flex-direction:column;gap:6px;margin-bottom:14px;}
+    .admin-ql-row{display:flex;align-items:center;gap:8px;}
+    .admin-ql-row input{flex:1;background:var(--bg);border:1px solid var(--border);color:var(--text);font-family:'Share Tech Mono',monospace;font-size:10px;padding:6px 8px;outline:none;}
+    .admin-ql-row input:focus{border-color:var(--accent);}
+    .admin-ql-del{background:transparent;border:none;color:var(--muted);cursor:pointer;font-size:14px;transition:color 0.2s;padding:0 4px;}
+    .admin-ql-del:hover{color:#f13535;}
 
     @keyframes pulse{0%,100%{opacity:1}50%{opacity:0.3}}
     @keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
     @keyframes fadeDown{from{opacity:0;transform:translateY(-12px)}to{opacity:1;transform:translateY(0)}}
     @keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:translateY(0)}}
-    @keyframes lineIn{from{opacity:0;width:0}to{opacity:1;width:280px}}
     @keyframes flicker{0%,95%,100%{opacity:1}96%,98%{opacity:0.85}}
     @keyframes blink{0%,100%{opacity:1}50%{opacity:0}}
     @keyframes bootLine{to{opacity:1}}
 
-    .app-tile:nth-child(1){animation-delay:0.04s}.app-tile:nth-child(2){animation-delay:0.08s}.app-tile:nth-child(3){animation-delay:0.12s}.app-tile:nth-child(4){animation-delay:0.16s}.app-tile:nth-child(5){animation-delay:0.20s}.app-tile:nth-child(6){animation-delay:0.24s}.app-tile:nth-child(7){animation-delay:0.28s}
-
-    @media(max-width:600px){#home{padding:16px}.app-grid{grid-template-columns:repeat(auto-fill,minmax(80px,1fr))}.tile-icon{width:54px;height:54px}.home-title{font-size:44px}}
+    @media(max-width:600px){#home{padding:16px}#admin-body{grid-template-columns:1fr}.app-grid{grid-template-columns:repeat(auto-fill,minmax(80px,1fr))}.tile-icon{width:54px;height:54px;font-size:22px}}
   </style>
 </head>
 <body>
-
 <canvas id="noise-canvas"></canvas>
 
 <!-- BOOT -->
@@ -189,12 +233,73 @@
   <button id="gate-btn" onclick="checkPassword()">INITIALIZE</button>
 </div>
 
+<!-- ADMIN OVERLAY -->
+<div id="admin-overlay">
+  <!-- Admin gate -->
+  <div id="admin-gate">
+    <h2>ADMIN <span>PANEL</span></h2>
+    <input id="admin-pass-input" type="password" placeholder="ADMIN PASSWORD" autofocus/>
+    <div id="admin-pass-error"></div>
+    <button id="admin-pass-btn" onclick="checkAdminPass()">ENTER</button>
+    <button onclick="closeAdmin()" style="background:transparent;border:none;color:var(--muted);font-family:'Share Tech Mono',monospace;font-size:10px;letter-spacing:0.1em;cursor:pointer;margin-top:8px;">CANCEL</button>
+  </div>
+  <!-- Admin panel -->
+  <div id="admin-panel">
+    <div id="admin-topbar">
+      <div id="admin-topbar-title">ADMIN <span>PANEL</span></div>
+      <button id="admin-close" onclick="closeAdmin()">✕ CLOSE</button>
+    </div>
+    <div id="admin-body">
+      <!-- Apps -->
+      <div class="admin-section">
+        <div class="admin-section-title">// Manage Apps</div>
+        <div id="admin-app-list" class="admin-app-list"></div>
+        <div class="admin-section-title" style="margin-top:16px;">// Add / Edit App</div>
+        <input type="hidden" id="edit-app-id"/>
+        <div class="admin-field"><label>App Name</label><input id="f-name" type="text" placeholder="e.g. SharpLines"/></div>
+        <div class="admin-field"><label>URL</label><input id="f-url" type="text" placeholder="https://..."/></div>
+        <div class="admin-field"><label>Icon (emoji)</label><input id="f-icon" type="text" placeholder="e.g. 🎲"/></div>
+        <div class="admin-field"><label>Category</label><select id="f-cat"></select></div>
+        <div class="admin-field"><label>Status</label>
+          <select id="f-status">
+            <option value="live">Live</option>
+            <option value="wip">In Progress</option>
+            <option value="planned">Planned</option>
+          </select>
+        </div>
+        <button class="admin-btn" onclick="saveApp()">SAVE APP</button>
+        <button class="admin-btn-sec" onclick="clearAppForm()">CLEAR FORM</button>
+      </div>
+
+      <!-- Right col -->
+      <div style="display:flex;flex-direction:column;gap:24px;">
+        <!-- Categories -->
+        <div class="admin-section">
+          <div class="admin-section-title">// Categories</div>
+          <div id="admin-cat-list" class="admin-cat-list"></div>
+          <div class="admin-field"><label>New Category</label><input id="f-new-cat" type="text" placeholder="e.g. Creative"/></div>
+          <button class="admin-btn" onclick="addCategory()">ADD CATEGORY</button>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="admin-section">
+          <div class="admin-section-title">// Quick Links</div>
+          <div id="admin-ql-list" class="admin-ql-list"></div>
+          <button class="admin-btn" onclick="addQLRow()">+ ADD LINK</button>
+          <button class="admin-btn-sec" onclick="saveQL()">SAVE LINKS</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
 <!-- OS -->
 <div id="os">
   <div id="topbar">
     <div class="topbar-brand">CHASER <span>OS</span></div>
     <div class="topbar-right">
       <div id="clock"></div>
+      <button id="admin-btn" onclick="openAdmin()">⚙ ADMIN</button>
       <button id="theme-btn" onclick="toggleTheme()">◑ THEME</button>
     </div>
     <div id="theme-panel">
@@ -206,18 +311,11 @@
       <div class="theme-opt" onclick="setTheme('white')"><span class="theme-dot" style="background:#fff;box-shadow:0 0 6px #fff;border:1px solid #333"></span>White</div>
     </div>
   </div>
-
-  <!-- QUICK LINKS — edit the links in the script below -->
-  <div id="quicklinks">
-    <span class="ql-label">// LINKS</span>
-    <!-- rendered by JS -->
-  </div>
-
+  <div id="quicklinks"><span class="ql-label">// LINKS</span></div>
   <div id="appbar">
     <button id="back-btn" onclick="goHome()">← HOME</button>
     <div id="app-title-bar"></div>
   </div>
-
   <div id="home">
     <div class="home-header">
       <div>
@@ -225,12 +323,10 @@
         <div class="home-title">CHASER <span>OS</span></div>
       </div>
       <div class="home-stats">
-        <div class="stat-num" id="live-count">2</div>
+        <div class="stat-num" id="live-count">0</div>
         <div class="stat-label">Apps Live</div>
       </div>
     </div>
-
-    <!-- MOTTO -->
     <div id="motto-wrap">
       <span class="motto-icon">// QUOTE OF THE SESSION</span>
       <div id="motto-quote"></div>
@@ -238,401 +334,423 @@
       <div id="motto-bio"></div>
       <div id="motto-progress"></div>
     </div>
-
-    <!-- NOTES -->
     <div id="notes-wrap">
       <div id="notes-header">
-        <div class="cat-label">— Scratchpad</div>
+        <div class="notes-label">— Scratchpad</div>
+        <button id="notes-clear" onclick="clearNotes()">CLEAR</button>
       </div>
       <textarea id="notes-area" placeholder="// Quick notes, ideas, reminders..."></textarea>
     </div>
-
-    <!-- ACTIVE -->
-    <div class="category">
-      <div class="cat-header"><div class="cat-label">Active</div><div class="cat-line"></div></div>
-      <div class="app-grid">
-        <div class="app-tile" onclick="openApp('SharpLines','https://jardsen.github.io/Sharplines/')">
-          <span class="tile-pip pip-live"></span>
-          <div class="tile-icon-wrap">
-            <div class="tile-glow"></div>
-            <div class="tile-icon">
-              <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <circle cx="16" cy="16" r="11" stroke="currentColor" stroke-width="1.5"/>
-                <path d="M16 5 L16 27 M5 16 L27 16" stroke="currentColor" stroke-width="1.2"/>
-                <path d="M8.5 8.5 Q16 13 23.5 8.5 M8.5 23.5 Q16 19 23.5 23.5" stroke="currentColor" stroke-width="1.2" fill="none"/>
-              </svg>
-            </div>
-          </div>
-          <div class="tile-name">SharpLines</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- TRADING -->
-    <div class="category">
-      <div class="cat-header"><div class="cat-label">Trading Suite</div><div class="cat-line"></div></div>
-      <div class="app-grid">
-        <div class="app-tile" onclick="openApp('Trading Journal','https://jardsen.github.io/Trading-Journal/')">
-          <span class="tile-pip pip-live"></span>
-          <div class="tile-icon-wrap">
-            <div class="tile-glow"></div>
-            <div class="tile-icon">
-              <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="7" y="5" width="18" height="22" rx="1" stroke="currentColor" stroke-width="1.5"/>
-                <path d="M11 11 H21 M11 15 H21 M11 19 H17" stroke="currentColor" stroke-width="1.2"/>
-                <path d="M19 18 L22 21 M20.5 21 L22 21 L22 19.5" stroke="currentColor" stroke-width="1.2"/>
-              </svg>
-            </div>
-          </div>
-          <div class="tile-name">Trading Journal</div>
-        </div>
-        <div class="app-tile" onclick="openApp('Backtester','#')">
-          <span class="tile-pip pip-planned"></span>
-          <div class="tile-icon-wrap">
-            <div class="tile-glow"></div>
-            <div class="tile-icon">
-              <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M5 24 L11 16 L16 20 L22 11 L27 15" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-                <path d="M5 24 H27" stroke="currentColor" stroke-width="1.2"/>
-                <circle cx="22" cy="11" r="2" fill="currentColor" opacity="0.6"/>
-              </svg>
-            </div>
-          </div>
-          <div class="tile-name">Backtester</div>
-        </div>
-        <div class="app-tile" onclick="openApp('ORX Bot','#')">
-          <span class="tile-pip pip-planned"></span>
-          <div class="tile-icon-wrap">
-            <div class="tile-glow"></div>
-            <div class="tile-icon">
-              <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="9" y="13" width="14" height="12" rx="2" stroke="currentColor" stroke-width="1.5"/>
-                <circle cx="13" cy="19" r="1.5" fill="currentColor" opacity="0.7"/>
-                <circle cx="19" cy="19" r="1.5" fill="currentColor" opacity="0.7"/>
-                <path d="M16 8 L16 13 M13 8 H19" stroke="currentColor" stroke-width="1.5"/>
-                <circle cx="16" cy="7" r="1.5" stroke="currentColor" stroke-width="1.2"/>
-                <path d="M9 19 H6 M23 19 H26" stroke="currentColor" stroke-width="1.5"/>
-              </svg>
-            </div>
-          </div>
-          <div class="tile-name">ORX Bot</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- HEALTH -->
-    <div class="category">
-      <div class="cat-header"><div class="cat-label">Health & Fitness</div><div class="cat-line"></div></div>
-      <div class="app-grid">
-        <div class="app-tile" onclick="openApp('Meal Rank','#')">
-          <span class="tile-pip pip-planned"></span>
-          <div class="tile-icon-wrap">
-            <div class="tile-glow"></div>
-            <div class="tile-icon">
-              <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M8 10 Q8 6 16 6 Q24 6 24 10 L22 22 Q22 25 16 25 Q10 25 10 22 Z" stroke="currentColor" stroke-width="1.5"/>
-                <path d="M12 14 H20 M13 18 H19" stroke="currentColor" stroke-width="1.2"/>
-                <path d="M16 6 L16 4" stroke="currentColor" stroke-width="1.5"/>
-              </svg>
-            </div>
-          </div>
-          <div class="tile-name">Meal Rank</div>
-        </div>
-        <div class="app-tile" onclick="openApp('Gym Rank','#')">
-          <span class="tile-pip pip-planned"></span>
-          <div class="tile-icon-wrap">
-            <div class="tile-glow"></div>
-            <div class="tile-icon">
-              <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="3" y="14" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.3"/>
-                <rect x="25" y="14" width="4" height="4" rx="1" stroke="currentColor" stroke-width="1.3"/>
-                <rect x="7" y="12" width="4" height="8" rx="1" stroke="currentColor" stroke-width="1.3"/>
-                <rect x="21" y="12" width="4" height="8" rx="1" stroke="currentColor" stroke-width="1.3"/>
-                <path d="M11 16 H21" stroke="currentColor" stroke-width="2"/>
-              </svg>
-            </div>
-          </div>
-          <div class="tile-name">Gym Rank</div>
-        </div>
-        <div class="app-tile" onclick="openApp('Fit Checker','#')">
-          <span class="tile-pip pip-planned"></span>
-          <div class="tile-icon-wrap">
-            <div class="tile-glow"></div>
-            <div class="tile-icon">
-              <svg viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path d="M16 6 L16 10 M16 22 L16 26 M6 16 L10 16 M22 16 L26 16" stroke="currentColor" stroke-width="1.5"/>
-                <circle cx="16" cy="16" r="6" stroke="currentColor" stroke-width="1.5"/>
-                <circle cx="16" cy="16" r="2" fill="currentColor" opacity="0.6"/>
-                <path d="M11 11 L13.5 13.5 M20.5 18.5 L18.5 18.5" stroke="currentColor" stroke-width="1.2"/>
-              </svg>
-            </div>
-          </div>
-          <div class="tile-name">Fit Checker</div>
-        </div>
-      </div>
-    </div>
-
-  </div><!-- end home -->
-
+    <div id="app-categories"></div>
+  </div>
   <iframe id="iframe-view" src="" allowfullscreen></iframe>
-
   <div id="os-footer">
     <span class="footer-text"><span class="footer-pulse"></span>SYSTEM ONLINE</span>
-    <span class="footer-text">BUILD v0.1 // JARDSEN</span>
+    <span class="footer-text">BUILD v0.2 // JARDSEN</span>
   </div>
 </div>
 
 <script>
-  // ── EDIT YOUR QUICK LINKS HERE ──────────────────────────────
-  const quickLinks = [
-    { name: "TradingView", url: "https://tradingview.com" },
-    { name: "Add a link...", url: "#" },
-  ];
-  // ────────────────────────────────────────────────────────────
-
   const PASS = "March2005";
+  const ADMIN_PASS = "AdminOpen";
 
-  // Render quick links
-  const ql = document.getElementById('quicklinks');
-  quickLinks.forEach(l => {
-    const a = document.createElement('a');
-    a.className = 'ql-link';
-    a.textContent = l.name;
-    a.href = l.url;
-    a.target = '_blank';
-    a.rel = 'noopener';
-    if(l.url === '#') a.onclick = e => e.preventDefault();
-    ql.appendChild(a);
-  });
+  // ── DEFAULT DATA ──────────────────────────────────────────────────────
+  const DEFAULT_CATEGORIES = ["Money Stuff $$$", "Gym", "Personal"];
+  const DEFAULT_APPS = [
+    { id:1, name:"SharpLines",      url:"https://jardsen.github.io/Sharplines/",      icon:"🎲", cat:"Money Stuff $$$", status:"live" },
+    { id:2, name:"Trading Journal", url:"https://jardsen.github.io/Trading-Journal/", icon:"📓", cat:"Money Stuff $$$", status:"live" },
+    { id:3, name:"Backtester",      url:"#",                                           icon:"📊", cat:"Money Stuff $$$", status:"planned" },
+    { id:4, name:"ORX Bot",         url:"#",                                           icon:"🤖", cat:"Money Stuff $$$", status:"planned" },
+    { id:5, name:"Gym Rank",        url:"#",                                           icon:"🏋️", cat:"Gym",             status:"planned" },
+    { id:6, name:"Daleel Memorizer",url:"#",                                           icon:"📖", cat:"Personal",        status:"planned" },
+    { id:7, name:"Storyboard",      url:"#",                                           icon:"🎬", cat:"Personal",        status:"planned" },
+  ];
+  const DEFAULT_QUICKLINKS = [
+    { name:"TradingView", url:"https://tradingview.com" },
+  ];
 
-  // Clock
-  function tick(){
-    document.getElementById('clock').textContent =
-      new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});
+  // ── STATE ─────────────────────────────────────────────────────────────
+  function ls(k,d){try{const v=localStorage.getItem(k);return v?JSON.parse(v):d;}catch(e){return d;}}
+  function ss(k,v){try{localStorage.setItem(k,JSON.stringify(v));}catch(e){}}
+
+  let categories = ls('cos_cats', DEFAULT_CATEGORIES);
+  let apps       = ls('cos_apps', DEFAULT_APPS);
+  let quickLinks = ls('cos_ql',   DEFAULT_QUICKLINKS);
+  let nextId     = ls('cos_nid',  DEFAULT_APPS.length + 1);
+
+  // ── RENDER HOME ───────────────────────────────────────────────────────
+  function renderHome() {
+    const container = document.getElementById('app-categories');
+    container.innerHTML = '';
+    const liveCount = apps.filter(a => a.status === 'live').length;
+    document.getElementById('live-count').textContent = liveCount;
+
+    categories.forEach(cat => {
+      const catApps = apps.filter(a => a.cat === cat);
+      if (!catApps.length) return;
+      const sec = document.createElement('div');
+      sec.className = 'category';
+      sec.innerHTML = `<div class="cat-header"><div class="cat-label">${cat}</div><div class="cat-line"></div></div>`;
+      const grid = document.createElement('div');
+      grid.className = 'app-grid';
+      catApps.forEach(app => {
+        const tile = document.createElement('div');
+        tile.className = 'app-tile';
+        tile.onclick = () => openApp(app.name, app.url);
+        tile.innerHTML = `
+          <span class="tile-pip pip-${app.status}"></span>
+          <div class="tile-icon-wrap">
+            <div class="tile-glow"></div>
+            <div class="tile-icon">${app.icon}</div>
+          </div>
+          <div class="tile-name">${app.name}</div>`;
+        grid.appendChild(tile);
+      });
+      sec.appendChild(grid);
+      container.appendChild(sec);
+    });
+
+    renderQL();
   }
+
+  // ── QUICK LINKS ───────────────────────────────────────────────────────
+  function renderQL() {
+    const ql = document.getElementById('quicklinks');
+    ql.innerHTML = '<span class="ql-label">// LINKS</span>';
+    quickLinks.forEach(l => {
+      const a = document.createElement('a');
+      a.className = 'ql-link';
+      a.textContent = l.name;
+      a.href = l.url;
+      a.target = '_blank';
+      a.rel = 'noopener';
+      if (!l.url || l.url === '#') a.onclick = e => e.preventDefault();
+      ql.appendChild(a);
+    });
+  }
+
+  // ── CLOCK ─────────────────────────────────────────────────────────────
+  function tick(){document.getElementById('clock').textContent=new Date().toLocaleTimeString([],{hour:'2-digit',minute:'2-digit',second:'2-digit'});}
   tick(); setInterval(tick,1000);
 
-  // Theme
+  // ── THEME ─────────────────────────────────────────────────────────────
   function toggleTheme(){document.getElementById('theme-panel').classList.toggle('open');}
-  function setTheme(t){
-    document.body.className = t ? 'theme-'+t : '';
-    sessionStorage.setItem('theme',t);
-    document.getElementById('theme-panel').classList.remove('open');
-  }
-  const saved = sessionStorage.getItem('theme');
-  setTheme(saved !== null ? saved : 'white');
-
-  document.addEventListener('click', e => {
-    const panel = document.getElementById('theme-panel');
-    const btn = document.getElementById('theme-btn');
-    if(!panel.contains(e.target) && e.target !== btn) panel.classList.remove('open');
+  function setTheme(t){document.body.className=t?'theme-'+t:'';ss('theme',t);document.getElementById('theme-panel').classList.remove('open');}
+  const savedTheme=ls('theme',null);
+  setTheme(savedTheme!==null?savedTheme:'white');
+  document.addEventListener('click',e=>{
+    const panel=document.getElementById('theme-panel');
+    const btn=document.getElementById('theme-btn');
+    if(!panel.contains(e.target)&&e.target!==btn)panel.classList.remove('open');
   });
 
-  // Cycling quotes
-  const quotes = [
-    { q: "Never, ever argue with your trading system.", a: "Michael Covel", bio: "Trend following author & trader. Documented the world's top trend followers." },
-    { q: "Do more of what works and less of what doesn't.", a: "Steve Clark", bio: "Hedge fund manager. One of the most consistent performers in European trading." },
-    { q: "Being a little late in your trade is your insurance that you are right or wrong.", a: "Jesse Livermore", bio: "Legendary speculator. Made and lost fortunes on Wall Street in the early 1900s." },
-    { q: "Most traders take a good system and destroy it by trying to make it into a perfect system.", a: "Robert Prechter", bio: "Elliott Wave theorist. 9x US Trading Champion. Author of Elliott Wave Principle." },
-    { q: "The goal of a successful trader is to make the best trades. Money is secondary.", a: "Alexander Elder", bio: "Psychiatrist turned trader. Author of Trading for a Living — a trading bible." },
-    { q: "If most traders would learn to sit on their hands 50% of the time, they would make a lot more money.", a: "Bill Lipschutz", bio: "Turned $12k into millions at Salomon Brothers. Called the Sultan of Currencies." },
-    { q: "There is a time to go long, a time to go short, and a time to go fishing.", a: "Jesse Livermore", bio: "Legendary speculator. Made and lost fortunes on Wall Street in the early 1900s." },
-    { q: "I believe in analysis and not forecasting.", a: "Nicolas Darvas", bio: "Dancer turned trader. Turned $25k into $2M using his famous Box Theory system." },
-    { q: "I know where I'm getting out before I get in.", a: "Bruce Kovner", bio: "Billionaire macro trader. Founded Caxton Associates, one of the top hedge funds." },
-    { q: "Markets can remain irrational longer than you can remain solvent.", a: "John Maynard Keynes", bio: "Legendary economist. Also a highly successful investor who beat the market." },
-    { q: "All you need is one pattern to make a living.", a: "Linda Raschke", bio: "Pro trader since the 80s. Known for short-term pattern trading and market timing." },
-    { q: "Novice traders take 5-10x too much risk on a trade they should size down on.", a: "Bruce Kovner", bio: "Billionaire macro trader. Founded Caxton Associates, one of the top hedge funds." },
-    { q: "In trading/investing, it's not about how much you make but how much you don't lose.", a: "Bernard Baruch", bio: "Wall Street legend and presidential advisor. Made a fortune before the 1929 crash." },
-    { q: "The elements of good trading are: cutting losses, cutting losses, and cutting losses.", a: "Ed Seykota", bio: "Pioneer of computerized trading. Turned $5k into $15M over 12 years. A legend." },
-    { q: "It's ok to be wrong; it's unforgivable to stay wrong.", a: "Martin Zweig", bio: "Predicted the 1987 crash on live TV. Built one of the best market timing models." },
-    { q: "In this business, if you're good, you're right six times out of ten.", a: "Peter Lynch", bio: "Averaged 29% annual returns at Fidelity Magellan. One of the all-time great fund managers." },
-    { q: "It's not whether you're right or wrong — it's how much you make when right and lose when wrong.", a: "George Soros", bio: "Broke the Bank of England in 1992. Made $1B in a single day. The greatest macro trader." },
-    { q: "Plan the trade. Trade the plan.", a: "Unknown", bio: "A universal rule passed down through generations of professional traders." },
-    { q: "You don't need to be a rocket scientist. Investing is not a game where the 160 IQ beats the 130 IQ.", a: "Warren Buffett", bio: "The Oracle of Omaha. $100B+ net worth. Greatest long-term investor in history." },
-    { q: "We simply attempt to be fearful when others are greedy and greedy only when others are fearful.", a: "Warren Buffett", bio: "The Oracle of Omaha. $100B+ net worth. Greatest long-term investor in history." },
-    { q: "The market is a device for transferring money from the impatient to the patient.", a: "Warren Buffett", bio: "The Oracle of Omaha. $100B+ net worth. Greatest long-term investor in history." },
-    { q: "Sheer will and determination is no substitute for something that actually works.", a: "Jason Klatt", bio: "Active trader and educator focused on rules-based systematic trading approaches." },
-    { q: "Frankly, I don't see markets; I see risks, rewards, and money.", a: "Larry Hite", bio: "Co-founded Mint Investment. One of the first billion-dollar commodity trading funds." },
-  ];
-
-  // Pick quote based on day of year so it changes at midnight
-  function getDayIndex(){
-    const now = new Date();
-    const start = new Date(now.getFullYear(), 0, 0);
-    const diff = now - start;
-    const oneDay = 1000 * 60 * 60 * 24;
-    const dayOfYear = Math.floor(diff / oneDay);
-    return dayOfYear % quotes.length;
+  // ── NOTES ─────────────────────────────────────────────────────────────
+  function initNotes(){
+    const area=document.getElementById('notes-area');
+    area.value=localStorage.getItem('chaser_notes')||'';
+    area.addEventListener('input',()=>localStorage.setItem('chaser_notes',area.value));
   }
-
-  function showQuote(animate){
-    const {q, a, bio} = quotes[getDayIndex()];
-    const qEl = document.getElementById('motto-quote');
-    const aEl = document.getElementById('motto-author');
-    const bEl = document.getElementById('motto-bio');
-    const pEl = document.getElementById('motto-progress');
-
-    if(animate){
-      qEl.classList.add('fade'); aEl.classList.add('fade'); bEl.classList.add('fade');
-      setTimeout(()=>{
-        qEl.textContent = '"' + q + '"';
-        aEl.textContent = '— ' + a;
-        bEl.textContent = bio;
-        qEl.classList.remove('fade'); aEl.classList.remove('fade'); bEl.classList.remove('fade');
-        // progress bar fills to midnight
-        startDailyProgress(pEl);
-      }, 500);
-    } else {
-      qEl.textContent = '"' + q + '"';
-      aEl.textContent = '— ' + a;
-      bEl.textContent = bio;
-      startDailyProgress(pEl);
+  function clearNotes(){
+    if(confirm('Clear scratchpad?')){
+      localStorage.removeItem('chaser_notes');
+      document.getElementById('notes-area').value='';
     }
   }
 
-  function startDailyProgress(pEl){
-    const now = new Date();
-    const midnight = new Date(now);
-    midnight.setHours(24,0,0,0);
-    const totalDay = 24 * 60 * 60 * 1000;
-    const elapsed = totalDay - (midnight - now);
-    const pct = (elapsed / totalDay) * 100;
-    const remaining = midnight - now;
-
-    pEl.style.transition = 'none';
-    pEl.style.width = pct + '%';
-    setTimeout(()=>{
-      pEl.style.transition = 'width ' + remaining + 'ms linear';
-      pEl.style.width = '100%';
-    }, 50);
-  }
-
-  // Check every minute if day has changed
-  function checkMidnight(){
-    const now = new Date();
-    if(now.getHours() === 0 && now.getMinutes() === 0){
-      showQuote(true);
-    }
-  }
-
-  showQuote(false);
-  setInterval(checkMidnight, 60000);
-
-  // Notes
-  const notesKey = 'chaser_notes';
-  const notesArea = document.getElementById('notes-area');
-  notesArea.value = localStorage.getItem(notesKey) || '';
-  notesArea.addEventListener('input', () => localStorage.setItem(notesKey, notesArea.value));
-
-  // Auth
-  if(sessionStorage.getItem('hub_auth') === '1') showGate();
-  document.getElementById('gate-input').addEventListener('keydown', e => {
-    if(e.key === 'Enter') checkPassword();
-  });
+  // ── AUTH ──────────────────────────────────────────────────────────────
+  if(sessionStorage.getItem('hub_auth')==='1') showGate();
+  document.getElementById('gate-input').addEventListener('keydown',e=>{if(e.key==='Enter')checkPassword();});
   function checkPassword(){
-    const v = document.getElementById('gate-input').value;
-    if(v === PASS){ sessionStorage.setItem('hub_auth','1'); unlock(); }
+    const v=document.getElementById('gate-input').value;
+    if(v===PASS){sessionStorage.setItem('hub_auth','1');unlock();}
     else{
-      const i = document.getElementById('gate-input');
-      const e = document.getElementById('gate-error');
-      i.classList.add('error'); e.textContent = 'ACCESS DENIED'; i.value = '';
-      setTimeout(()=>{ i.classList.remove('error'); e.textContent=''; }, 1500);
+      const i=document.getElementById('gate-input'),e2=document.getElementById('gate-error');
+      i.classList.add('error');e2.textContent='ACCESS DENIED';i.value='';
+      setTimeout(()=>{i.classList.remove('error');e2.textContent='';},1500);
     }
   }
   function unlock(){
-    document.getElementById('gate').style.display = 'none';
-    document.getElementById('os').style.display = 'flex';
+    document.getElementById('gate').style.display='none';
+    document.getElementById('os').style.display='flex';
+    initNotes();
+    renderHome();
   }
   function showGate(){
-    document.getElementById('boot').style.display = 'none';
-    document.getElementById('gate').style.display = 'flex';
-    setTimeout(()=>document.getElementById('gate-input').focus(), 100);
+    document.getElementById('boot').style.display='none';
+    document.getElementById('gate').style.display='flex';
+    setTimeout(()=>document.getElementById('gate-input').focus(),100);
   }
 
-  // App launcher
-  function openApp(name, url){
-    if(!url || url === '#'){ alert(name + ' is not live yet.'); return; }
-    document.getElementById('home').style.display = 'none';
-    document.getElementById('topbar').style.display = 'none';
-    document.getElementById('quicklinks').style.display = 'none';
-    document.getElementById('appbar').style.display = 'flex';
-    document.getElementById('app-title-bar').textContent = name;
-    document.getElementById('iframe-view').style.display = 'block';
-    document.getElementById('iframe-view').src = url;
+  // ── APP LAUNCHER ──────────────────────────────────────────────────────
+  function openApp(name,url){
+    if(!url||url==='#'){alert(name+' is not live yet.');return;}
+    document.getElementById('home').style.display='none';
+    document.getElementById('topbar').style.display='none';
+    document.getElementById('quicklinks').style.display='none';
+    document.getElementById('appbar').style.display='flex';
+    document.getElementById('app-title-bar').textContent=name;
+    document.getElementById('iframe-view').style.display='block';
+    document.getElementById('iframe-view').src=url;
   }
   function goHome(){
-    document.getElementById('home').style.display = 'block';
-    document.getElementById('topbar').style.display = 'flex';
-    document.getElementById('quicklinks').style.display = 'flex';
-    document.getElementById('appbar').style.display = 'none';
-    document.getElementById('iframe-view').style.display = 'none';
-    document.getElementById('iframe-view').src = '';
+    document.getElementById('home').style.display='block';
+    document.getElementById('topbar').style.display='flex';
+    document.getElementById('quicklinks').style.display='flex';
+    document.getElementById('appbar').style.display='none';
+    document.getElementById('iframe-view').style.display='none';
+    document.getElementById('iframe-view').src='';
   }
 
-  // Noise background
-  (function(){
-    const canvas = document.getElementById('noise-canvas');
-    const ctx = canvas.getContext('2d');
-    let w,h,imageData,data;
-    const themeColors = {
-      '': [200,241,53], 'orange': [255,94,26], 'ice': [56,217,245],
-      'gold': [245,197,24], 'purple': [176,96,255], 'white': [255,255,255]
-    };
-    function resize(){ w=canvas.width=window.innerWidth; h=canvas.height=window.innerHeight; imageData=ctx.createImageData(w,h); data=imageData.data; }
-    function getColor(){ const cls=document.body.className.replace('theme-',''); return themeColors[cls]||themeColors['']; }
-    function draw(){
-      const [r,g,b] = getColor();
-      for(let i=0;i<data.length;i+=4){
-        const v=Math.random()*255|0; const bl=v*0.6|0;
-        data[i]=r*bl/255|0; data[i+1]=g*bl/255|0; data[i+2]=b*bl/255|0; data[i+3]=v*0.35|0;
-      }
-      ctx.putImageData(imageData,0,0);
-      requestAnimationFrame(draw);
+  // ── ADMIN ─────────────────────────────────────────────────────────────
+  let adminUnlocked = false;
+  function openAdmin(){
+    document.getElementById('admin-overlay').classList.add('open');
+    document.getElementById('admin-gate').style.display = adminUnlocked ? 'none' : 'flex';
+    document.getElementById('admin-panel').className = adminUnlocked ? 'open' : '';
+    if(adminUnlocked) renderAdmin();
+    setTimeout(()=>{
+      const inp = document.getElementById('admin-pass-input');
+      inp.focus();
+      inp.onkeydown = e => { if(e.key==='Enter') checkAdminPass(); };
+    },100);
+  }
+  function closeAdmin(){
+    document.getElementById('admin-overlay').classList.remove('open');
+    document.getElementById('admin-pass-input').value='';
+    renderHome();
+  }
+  function checkAdminPass(){
+    const inp = document.getElementById('admin-pass-input');
+    const v = inp.value;
+    console.log('Entered:', JSON.stringify(v), 'Expected:', JSON.stringify(ADMIN_PASS));
+    if(v.trim() === ADMIN_PASS){
+      adminUnlocked=true;
+      document.getElementById('admin-gate').style.display='none';
+      document.getElementById('admin-panel').className='open';
+      renderAdmin();
+    } else {
+      const errEl = document.getElementById('admin-pass-error');
+      inp.classList.add('error');
+      errEl.textContent='INCORRECT PASSWORD';
+      inp.value='';
+      setTimeout(()=>{inp.classList.remove('error');errEl.textContent='';},1500);
     }
-    window.addEventListener('resize',resize);
-    resize(); draw();
+  }
+
+  function renderAdmin(){
+    renderAdminApps();
+    renderAdminCats();
+    renderAdminQL();
+    populateCatSelect();
+  }
+
+  function renderAdminApps(){
+    const list=document.getElementById('admin-app-list');
+    list.innerHTML='';
+    apps.forEach(app=>{
+      const row=document.createElement('div');
+      row.className='admin-app-row';
+      const pipColor=app.status==='live'?'var(--accent)':app.status==='wip'?'#f1b335':'#333';
+      row.innerHTML=`
+        <span class="admin-app-row-icon">${app.icon}</span>
+        <span class="admin-app-row-name">${app.name}</span>
+        <span class="admin-app-row-cat">${app.cat}</span>
+        <span class="admin-app-row-pip" style="background:${pipColor};border-radius:50%;width:7px;height:7px;flex-shrink:0;"></span>
+        <button class="admin-app-edit" onclick="editApp(${app.id})">EDIT</button>
+        <button class="admin-app-del" onclick="deleteApp(${app.id})">DEL</button>`;
+      list.appendChild(row);
+    });
+  }
+
+  function renderAdminCats(){
+    const list=document.getElementById('admin-cat-list');
+    list.innerHTML='';
+    categories.forEach((cat,i)=>{
+      const row=document.createElement('div');
+      row.className='admin-cat-row';
+      row.innerHTML=`<span class="admin-cat-name">${cat}</span><button class="admin-cat-del" onclick="deleteCat(${i})">✕</button>`;
+      list.appendChild(row);
+    });
+  }
+
+  function renderAdminQL(){
+    const list=document.getElementById('admin-ql-list');
+    list.innerHTML='';
+    quickLinks.forEach((l,i)=>{
+      const row=document.createElement('div');
+      row.className='admin-ql-row';
+      row.innerHTML=`
+        <input type="text" placeholder="Name" value="${l.name}" id="ql-name-${i}"/>
+        <input type="text" placeholder="URL" value="${l.url}" id="ql-url-${i}"/>
+        <button class="admin-ql-del" onclick="removeQL(${i})">✕</button>`;
+      list.appendChild(row);
+    });
+  }
+
+  function populateCatSelect(){
+    const sel=document.getElementById('f-cat');
+    sel.innerHTML='';
+    categories.forEach(cat=>{
+      const o=document.createElement('option');
+      o.value=cat;o.textContent=cat;
+      sel.appendChild(o);
+    });
+  }
+
+  function saveApp(){
+    const id=document.getElementById('edit-app-id').value;
+    const app={
+      id: id ? parseInt(id) : nextId++,
+      name: document.getElementById('f-name').value.trim(),
+      url:  document.getElementById('f-url').value.trim(),
+      icon: document.getElementById('f-icon').value.trim()||'📦',
+      cat:  document.getElementById('f-cat').value,
+      status: document.getElementById('f-status').value,
+    };
+    if(!app.name){alert('App name required');return;}
+    if(id){const idx=apps.findIndex(a=>a.id===parseInt(id));if(idx>-1)apps[idx]=app;}
+    else{apps.push(app);}
+    ss('cos_apps',apps);ss('cos_nid',nextId);
+    clearAppForm();renderAdminApps();
+  }
+
+  function editApp(id){
+    const app=apps.find(a=>a.id===id);if(!app)return;
+    document.getElementById('edit-app-id').value=app.id;
+    document.getElementById('f-name').value=app.name;
+    document.getElementById('f-url').value=app.url;
+    document.getElementById('f-icon').value=app.icon;
+    document.getElementById('f-cat').value=app.cat;
+    document.getElementById('f-status').value=app.status;
+  }
+
+  function deleteApp(id){
+    if(!confirm('Delete this app?'))return;
+    apps=apps.filter(a=>a.id!==id);
+    ss('cos_apps',apps);renderAdminApps();
+  }
+
+  function clearAppForm(){
+    document.getElementById('edit-app-id').value='';
+    document.getElementById('f-name').value='';
+    document.getElementById('f-url').value='';
+    document.getElementById('f-icon').value='';
+    document.getElementById('f-status').value='live';
+  }
+
+  function addCategory(){
+    const val=document.getElementById('f-new-cat').value.trim();
+    if(!val||categories.includes(val))return;
+    categories.push(val);ss('cos_cats',categories);
+    document.getElementById('f-new-cat').value='';
+    renderAdminCats();populateCatSelect();
+  }
+
+  function deleteCat(i){
+    if(!confirm('Delete category "'+categories[i]+'"? Apps in it will need reassigning.'))return;
+    categories.splice(i,1);ss('cos_cats',categories);
+    renderAdminCats();populateCatSelect();
+  }
+
+  function addQLRow(){
+    quickLinks.push({name:'',url:''});
+    renderAdminQL();
+  }
+  function removeQL(i){quickLinks.splice(i,1);renderAdminQL();}
+  function saveQL(){
+    quickLinks=[];
+    document.querySelectorAll('.admin-ql-row').forEach((row,i)=>{
+      const name=document.getElementById('ql-name-'+i)?.value.trim();
+      const url=document.getElementById('ql-url-'+i)?.value.trim();
+      if(name&&url)quickLinks.push({name,url});
+    });
+    ss('cos_ql',quickLinks);
+    alert('Quick links saved.');
+  }
+
+  // ── QUOTES ───────────────────────────────────────────────────────────
+  const quotes=[
+    {q:"Never, ever argue with your trading system.",a:"Michael Covel",bio:"Trend following author & trader. Documented the world's top trend followers."},
+    {q:"Do more of what works and less of what doesn't.",a:"Steve Clark",bio:"Hedge fund manager. One of the most consistent performers in European trading."},
+    {q:"Being a little late in your trade is your insurance that you are right or wrong.",a:"Jesse Livermore",bio:"Legendary speculator. Made and lost fortunes on Wall Street in the early 1900s."},
+    {q:"Most traders take a good system and destroy it by trying to make it into a perfect system.",a:"Robert Prechter",bio:"Elliott Wave theorist. 9x US Trading Champion. Author of Elliott Wave Principle."},
+    {q:"The goal of a successful trader is to make the best trades. Money is secondary.",a:"Alexander Elder",bio:"Psychiatrist turned trader. Author of Trading for a Living — a trading bible."},
+    {q:"If most traders would learn to sit on their hands 50% of the time, they would make a lot more money.",a:"Bill Lipschutz",bio:"Turned $12k into millions at Salomon Brothers. Called the Sultan of Currencies."},
+    {q:"There is a time to go long, a time to go short, and a time to go fishing.",a:"Jesse Livermore",bio:"Legendary speculator. Made and lost fortunes on Wall Street in the early 1900s."},
+    {q:"I believe in analysis and not forecasting.",a:"Nicolas Darvas",bio:"Dancer turned trader. Turned $25k into $2M using his famous Box Theory system."},
+    {q:"I know where I'm getting out before I get in.",a:"Bruce Kovner",bio:"Billionaire macro trader. Founded Caxton Associates, one of the top hedge funds."},
+    {q:"Markets can remain irrational longer than you can remain solvent.",a:"John Maynard Keynes",bio:"Legendary economist. Also a highly successful investor who beat the market."},
+    {q:"All you need is one pattern to make a living.",a:"Linda Raschke",bio:"Pro trader since the 80s. Known for short-term pattern trading and market timing."},
+    {q:"In trading/investing, it's not about how much you make but how much you don't lose.",a:"Bernard Baruch",bio:"Wall Street legend and presidential advisor. Made a fortune before the 1929 crash."},
+    {q:"The elements of good trading are: cutting losses, cutting losses, and cutting losses.",a:"Ed Seykota",bio:"Pioneer of computerized trading. Turned $5k into $15M over 12 years. A legend."},
+    {q:"It's ok to be wrong; it's unforgivable to stay wrong.",a:"Martin Zweig",bio:"Predicted the 1987 crash on live TV. Built one of the best market timing models."},
+    {q:"In this business, if you're good, you're right six times out of ten.",a:"Peter Lynch",bio:"Averaged 29% annual returns at Fidelity Magellan. One of the all-time great fund managers."},
+    {q:"It's not whether you're right or wrong — it's how much you make when right and lose when wrong.",a:"George Soros",bio:"Broke the Bank of England in 1992. Made $1B in a single day. The greatest macro trader."},
+    {q:"You don't need to be a rocket scientist. Investing is not a game where the 160 IQ beats the 130 IQ.",a:"Warren Buffett",bio:"The Oracle of Omaha. $100B+ net worth. Greatest long-term investor in history."},
+    {q:"We simply attempt to be fearful when others are greedy and greedy only when others are fearful.",a:"Warren Buffett",bio:"The Oracle of Omaha. $100B+ net worth. Greatest long-term investor in history."},
+    {q:"The market is a device for transferring money from the impatient to the patient.",a:"Warren Buffett",bio:"The Oracle of Omaha. $100B+ net worth. Greatest long-term investor in history."},
+    {q:"Frankly, I don't see markets; I see risks, rewards, and money.",a:"Larry Hite",bio:"Co-founded Mint Investment. One of the first billion-dollar commodity trading funds."},
+    {q:"Sheer will and determination is no substitute for something that actually works.",a:"Jason Klatt",bio:"Active trader and educator focused on rules-based systematic trading approaches."},
+    {q:"Plan the trade. Trade the plan.",a:"Unknown",bio:"A universal rule passed down through generations of professional traders."},
+  ];
+
+  function getDayIndex(){
+    const n=new Date(),s=new Date(n.getFullYear(),0,0);
+    return Math.floor((n-s)/(1000*60*60*24))%quotes.length;
+  }
+  function showQuote(animate){
+    const {q,a,bio}=quotes[getDayIndex()];
+    const qEl=document.getElementById('motto-quote'),aEl=document.getElementById('motto-author'),bEl=document.getElementById('motto-bio'),pEl=document.getElementById('motto-progress');
+    if(animate){
+      qEl.classList.add('fade');aEl.classList.add('fade');bEl.classList.add('fade');
+      setTimeout(()=>{qEl.textContent='"'+q+'"';aEl.textContent='— '+a;bEl.textContent=bio;qEl.classList.remove('fade');aEl.classList.remove('fade');bEl.classList.remove('fade');startDailyProgress(pEl);},500);
+    } else {qEl.textContent='"'+q+'"';aEl.textContent='— '+a;bEl.textContent=bio;startDailyProgress(pEl);}
+  }
+  function startDailyProgress(pEl){
+    const now=new Date(),midnight=new Date(now);midnight.setHours(24,0,0,0);
+    const total=24*60*60*1000,elapsed=total-(midnight-now),pct=(elapsed/total)*100,remaining=midnight-now;
+    pEl.style.transition='none';pEl.style.width=pct+'%';
+    setTimeout(()=>{pEl.style.transition='width '+remaining+'ms linear';pEl.style.width='100%';},50);
+  }
+  function checkMidnight(){const n=new Date();if(n.getHours()===0&&n.getMinutes()===0)showQuote(true);}
+  showQuote(false);setInterval(checkMidnight,60000);
+
+  // ── NOISE ─────────────────────────────────────────────────────────────
+  (function(){
+    const canvas=document.getElementById('noise-canvas'),ctx=canvas.getContext('2d');
+    let w,h,imageData,data;
+    const themeColors={'':[ 200,241,53],'orange':[255,94,26],'ice':[56,217,245],'gold':[245,197,24],'purple':[176,96,255],'white':[255,255,255]};
+    function resize(){w=canvas.width=window.innerWidth;h=canvas.height=window.innerHeight;imageData=ctx.createImageData(w,h);data=imageData.data;}
+    function getColor(){const c=document.body.className.replace('theme-','');return themeColors[c]||themeColors[''];}
+    function draw(){
+      const [r,g,b]=getColor();
+      for(let i=0;i<data.length;i+=4){const v=Math.random()*255|0,bl=v*0.6|0;data[i]=r*bl/255|0;data[i+1]=g*bl/255|0;data[i+2]=b*bl/255|0;data[i+3]=v*0.35|0;}
+      ctx.putImageData(imageData,0,0);requestAnimationFrame(draw);
+    }
+    window.addEventListener('resize',resize);resize();draw();
   })();
 
-  // Boot sequence
+  // ── BOOT ──────────────────────────────────────────────────────────────
   (function(){
-    if(sessionStorage.getItem('hub_auth') === '1'){ showGate(); return; }
-
-    const bootEl = document.getElementById('boot-lines');
-    const barWrap = document.getElementById('boot-bar-wrap');
-    const barFill = document.getElementById('boot-bar-fill');
-
-    const lines = [
-      { text: 'CHASER OS — BOOT SEQUENCE INITIATED', cls: 'accent', delay: 0 },
-      { text: 'Loading kernel modules...', delay: 150 },
-      { text: 'Mounting filesystem...', delay: 300 },
-      { text: 'Checking system integrity... OK', delay: 450 },
-      { text: 'Establishing secure connection...', delay: 600 },
-      { text: 'Loading user profile: JARDSEN', cls: 'accent', delay: 750 },
-      { text: 'Decrypting personal vault...', delay: 900 },
-      { text: 'Initializing app registry... 7 apps found', delay: 1050 },
-      { text: 'Starting display server...', delay: 1200 },
-      { text: 'All systems nominal.', cls: 'accent', delay: 1350 },
+    if(sessionStorage.getItem('hub_auth')==='1'){showGate();return;}
+    const bootEl=document.getElementById('boot-lines'),barWrap=document.getElementById('boot-bar-wrap'),barFill=document.getElementById('boot-bar-fill');
+    const lines=[
+      {text:'CHASER OS — BOOT SEQUENCE INITIATED',cls:'accent',delay:0},
+      {text:'Loading kernel modules...',delay:150},
+      {text:'Mounting filesystem...',delay:300},
+      {text:'Checking system integrity... OK',delay:450},
+      {text:'Establishing secure connection...',delay:600},
+      {text:'Loading user profile: JARDSEN',cls:'accent',delay:750},
+      {text:'Decrypting personal vault...',delay:900},
+      {text:'Initializing app registry...',delay:1050},
+      {text:'Starting display server...',delay:1200},
+      {text:'All systems nominal.',cls:'accent',delay:1350},
     ];
-
-    lines.forEach(l => {
-      setTimeout(() => {
-        const div = document.createElement('div');
-        div.className = 'bl' + (l.cls ? ' ' + l.cls : '');
-        div.textContent = '> ' + l.text;
-        bootEl.appendChild(div);
-        bootEl.scrollTop = bootEl.scrollHeight;
-      }, l.delay);
-    });
-
-    setTimeout(() => {
-      barWrap.style.display = 'block';
-      let pct = 0;
-      const iv = setInterval(() => {
-        pct += 5;
-        barFill.style.width = pct + '%';
-        if(pct >= 100){ clearInterval(iv); setTimeout(showGate, 200); }
-      }, 18);
-    }, 1500);
+    lines.forEach(l=>{setTimeout(()=>{const d=document.createElement('div');d.className='bl'+(l.cls?' '+l.cls:'');d.textContent='> '+l.text;bootEl.appendChild(d);bootEl.scrollTop=bootEl.scrollHeight;},l.delay);});
+    setTimeout(()=>{
+      barWrap.style.display='block';let pct=0;
+      const iv=setInterval(()=>{pct+=5;barFill.style.width=pct+'%';if(pct>=100){clearInterval(iv);setTimeout(showGate,200);}},18);
+    },1500);
   })();
 </script>
 </body>
