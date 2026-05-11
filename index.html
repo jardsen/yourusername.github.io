@@ -490,7 +490,9 @@
     document.getElementById('appbar').style.display='flex';
     document.getElementById('app-title-bar').textContent=name;
     document.getElementById('iframe-view').style.display='block';
-    document.getElementById('iframe-view').src=url;
+    // Cache-bust so latest version always loads
+    const sep = url.includes('?') ? '&' : '?';
+    document.getElementById('iframe-view').src = url + sep + '_cb=' + Date.now();
   }
   function goHome(){
     document.getElementById('home').style.display='block';
